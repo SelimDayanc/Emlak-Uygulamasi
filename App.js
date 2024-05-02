@@ -15,7 +15,8 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="GirisEkrani" component={GirisEkrani} />
-        <Stack.Screen name="DetayEkranı" component={DetayEkranı} />aa
+        <Stack.Screen name="DetayEkranı" component={DetayEkranı} />
+        <Stack.Screen name="AnaEkran" component={AnaEkran} />
       </Stack.Navigator>
     </NavigationContainer>
   );
