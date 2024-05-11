@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from 'react';
 import {
   StatusBar,
   View,
@@ -7,15 +7,29 @@ import {
   SafeAreaView,
   Image,
   Pressable,
-} from "react-native";
-import renkler from "C:/Users/MSI-PC/Desktop/Emlak/MyApp/src/consts/renkler";
-const GirisEkrani = ({ navigation }) => {
+} from 'react-native';
+import renkler from 'C:/Users/MSI-PC/Desktop/Emlak/MyApp/src/consts/renkler';
+import {getRealEstates} from './firebase'; // Firebase'den veri çekmek için ekledim
+
+const GirisEkrani = ({navigation}) => {
+  useEffect(() => {
+    // Firestore'dan emlak verilerini çekmek için ekledim
+    const fetchRealEstates = async () => {
+      const fetchedRealEstates = await getRealEstates();
+      // Emlak verilerini aldıktan sonra, ana ekrana yönlendirme
+      if (fetchedRealEstates.length > 0) {
+        navigation.navigate('AnaEkran');
+      }
+    };
+    fetchRealEstates();
+  }, []);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <StatusBar translucent backgroundColor={renkler.tranparent} />
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <StatusBar translucent backgroundColor={renkler.transparent} />
 
       <Image
-        source={require("C:/Users/MSI-PC/Desktop/Emlak/MyApp/src/assets/girisResmi.jpg")}
+        source={require('C:/Users/MSI-PC/Desktop/Emlak/MyApp/src/assets/girisResmi.jpg')}
         style={style.resim}
       />
 
@@ -25,13 +39,13 @@ const GirisEkrani = ({ navigation }) => {
         <View style={[style.giris, style.girisAktif]} />
       </View>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+      <View style={{paddingHorizontal: 20, paddingTop: 20}}>
         <View>
           <Text style={style.title}>Sana Uygun</Text>
           <Text style={style.title}>Aradığın Evler</Text>
         </View>
 
-        <View style={{ marginTop: 10 }}>
+        <View style={{marginTop: 10}}>
           <Text style={style.textStyle}>
             Yalnızca birkaç tıklamayla karşında
           </Text>
@@ -42,13 +56,12 @@ const GirisEkrani = ({ navigation }) => {
       <View
         style={{
           flex: 1,
-          justifyContent: "flex-end",
+          justifyContent: 'flex-end',
           paddingBottom: 40,
-        }}
-      >
-        <Pressable onPress={() => navigation.navigate("AnaEkran")}>
+        }}>
+        <Pressable onPress={() => navigation.navigate('AnaEkran')}>
           <View style={style.btn}>
-            <Text style={{ color: "white" }}>Giriş Yap</Text>
+            <Text style={{color: 'white'}}>Giriş Yap</Text>
           </View>
         </Pressable>
       </View>
@@ -59,14 +72,14 @@ const GirisEkrani = ({ navigation }) => {
 const style = StyleSheet.create({
   resim: {
     height: 420,
-    width: "100%",
+    width: '100%',
     borderBottomLeftRadius: 100,
   },
   girisAna: {
     height: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   giris: {
     height: 3,
@@ -81,12 +94,13 @@ const style = StyleSheet.create({
   btn: {
     height: 60,
     marginHorizontal: 20,
-    backgroundColor: "black",
+    backgroundColor: 'black',
     borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: { fontSize: 32, fontWeight: "bold" },
-  textStyle: { fontSize: 16, color: renkler.grey },
+  title: {fontSize: 32, fontWeight: 'bold'},
+  textStyle: {fontSize: 16, color: renkler.grey},
 });
+
 export default GirisEkrani;
