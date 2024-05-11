@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from 'react';
 import {
   ImageBackground,
   SafeAreaView,
@@ -9,23 +9,33 @@ import {
   Image,
   Dimensions,
   ScrollView,
-} from "react-native";
+} from 'react-native';
 
-import Icon from "react-native-vector-icons/MaterialIcons";
-{
-  /*MUI Sitesindeki iconları kullandım https://mui.com/ */
-}
-import renkler from "C:/Users/MSI-PC/Desktop/Emlak/MyApp/src/consts/renkler";
-const { width } = Dimensions.get("screen");
-const DetayEkranı = ({ navigation, route }) => {
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import renkler from 'C:/Users/MSI-PC/Desktop/Emlak/MyApp/src/consts/renkler';
+import {getRealEstates} from './firebase'; // Firebase'den veri çekmek için ekledim
+
+const {width} = Dimensions.get('screen');
+
+const DetayEkranı = ({navigation, route}) => {
+  const [realEstates, setRealEstates] = useState([]);
   const ev = route.params;
 
-  const InteriorCard = ({ interior }) => {
+  useEffect(() => {
+    // Firestore'dan emlak verilerini çekmek için
+    const fetchRealEstates = async () => {
+      const fetchedRealEstates = await getRealEstates();
+      setRealEstates(fetchedRealEstates);
+    };
+    fetchRealEstates();
+  }, []);
+
+  const InteriorCard = ({interior}) => {
     return <Image source={interior} style={style.icMekanResmi} />;
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: renkler.white }}>
+    <SafeAreaView style={{flex: 1, backgroundColor: renkler.white}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Ev Resimleri */}
 
@@ -42,27 +52,25 @@ const DetayEkranı = ({ navigation, route }) => {
           </ImageBackground>
 
           <View style={style.sanalTur}>
-            <Text style={{ color: renkler.white }}>Sanal Tur</Text>
+            <Text style={{color: renkler.white}}>Sanal Tur</Text>
           </View>
         </View>
 
         <View style={style.detailsContainer}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>{ev.title}</Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>{ev.title}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View style={style.reytingSyle}>
-                <Text style={{ color: renkler.white }}>4.8</Text>
+                <Text style={{color: renkler.white}}>4.8</Text>
               </View>
-              <Text style={{ fontSize: 13, marginLeft: 5 }}>
+              <Text style={{fontSize: 13, marginLeft: 5}}>
                 Reytingi Yüksek Ev
               </Text>
             </View>
           </View>
 
-          <Text style={{ fontSize: 16, color: renkler.grey }}>{ev.konum}</Text>
-          <View style={{ flexDirection: "row", marginTop: 20 }}>
+          <Text style={{fontSize: 16, color: renkler.grey}}>{ev.konum}</Text>
+          <View style={{flexDirection: 'row', marginTop: 20}}>
             <View style={style.facility}>
               <Icon name="otel" size={18} />
               <Text style={style.facilityText}>2</Text>
@@ -76,17 +84,17 @@ const DetayEkranı = ({ navigation, route }) => {
               <Text style={style.facilityText}>100 m2</Text>
             </View>
           </View>
-          <Text style={{ marginTop: 20, color: renkler.grey }}>
+          <Text style={{marginTop: 20, color: renkler.grey}}>
             {ev.detaylar}
           </Text>
 
           <FlatList
-            contentContainerStyle={{ marginTop: 20 }}
+            contentContainerStyle={{marginTop: 20}}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, key) => key.toString()}
             data={ev.icmekanlar}
-            renderItem={({ item }) => <InteriorCard interior={item} />}
+            renderItem={({item}) => <InteriorCard interior={item} />}
           />
 
           <View style={style.footer}>
@@ -94,26 +102,22 @@ const DetayEkranı = ({ navigation, route }) => {
               <Text
                 style={{
                   color: renkler.blue,
-                  fontWeight: "bold",
+                  fontWeight: 'bold',
                   fontSize: 18,
-                }}
-              >
+                }}>
                 15,500 TL
               </Text>
               <Text
                 style={{
                   fontSize: 12,
                   color: renkler.grey,
-                  fontWeight: "bold",
-                }}
-              >
+                  fontWeight: 'bold',
+                }}>
                 Toplam Fiyat
               </Text>
             </View>
             <View style={style.rezButonu}>
-              <Text style={{ color: renkler.white }}>
-                Şimdi Rezervasyon Yap
-              </Text>
+              <Text style={{color: renkler.white}}>Şimdi Rezervasyon Yap</Text>
             </View>
           </View>
         </View>
@@ -127,19 +131,19 @@ const style = StyleSheet.create({
     elevation: 20,
     marginHorizontal: 20,
     marginTop: 20,
-    alignItems: "center",
+    alignItems: 'center',
     height: 350,
   },
   arkaplanResmi: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
     borderRadius: 20,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   header: {
     paddingVertical: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
   headerBtn: {
@@ -147,16 +151,16 @@ const style = StyleSheet.create({
     width: 50,
     backgroundColor: renkler.white,
     borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   reytingSyle: {
     height: 30,
     width: 35,
     backgroundColor: renkler.blue,
     borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sanalTur: {
     top: -20,
@@ -165,8 +169,8 @@ const style = StyleSheet.create({
     height: 40,
     paddingHorizontal: 20,
     backgroundColor: renkler.dark,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   icMekanResmi: {
     width: width / 3 - 20,
@@ -179,22 +183,22 @@ const style = StyleSheet.create({
     backgroundColor: renkler.light,
     borderRadius: 10,
     paddingHorizontal: 20,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 10,
   },
   rezButonu: {
     height: 50,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: renkler.dark,
     borderRadius: 10,
     paddingHorizontal: 20,
   },
-  detailsContainer: { flex: 1, paddingHorizontal: 20, marginTop: 40 },
-  facility: { flexDirection: "row", marginRight: 15 },
-  facilityText: { marginLeft: 5, color: renkler.grey },
+  detailsContainer: {flex: 1, paddingHorizontal: 20, marginTop: 40},
+  facility: {flexDirection: 'row', marginRight: 15},
+  facilityText: {marginLeft: 5, color: renkler.grey},
 });
 
 export default DetayEkranı;
